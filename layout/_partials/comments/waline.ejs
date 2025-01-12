@@ -3,21 +3,22 @@
   <script type="text/javascript">
     Fluid.utils.loadComments('#waline', function() {
       Fluid.utils.createCssLink('<%= url_join(theme.static_prefix.waline, 'waline.css') %>')
-      Fluid.utils.createScript('<%= url_join(theme.static_prefix.waline, 'waline.js') %>', function() {
-        var options = Object.assign(
-          <%- JSON.stringify(theme.waline || {}) %>,
-          {
-            el: '#waline',
-            path: <%= theme.waline.path %>
-          }
-        )
+      var options = Object.assign(
+        <%- JSON.stringify(theme.waline || {}) %>,
+        {
+          el: '#waline',
+          path: <%= theme.waline.path %>
+        }
+      );
+      (async () => {
+        const Waline = await import('<%= url_join(theme.static_prefix.waline, 'waline.js') %>');
         Waline.init(options);
         Fluid.utils.waitElementVisible('#waline .vcontent', () => {
           var imgSelector = '#waline .vcontent img:not(.vemoji)';
           Fluid.plugins.imageCaption(imgSelector);
           Fluid.plugins.fancyBox(imgSelector);
         })
-      });
+      })();
     });
   </script>
   <noscript>Please enable JavaScript to view the comments</noscript>
